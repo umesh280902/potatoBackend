@@ -4,6 +4,7 @@ tensorflow
 fastapi
 uvicorn
 pillow
+python-multipart
 # tensorflow-serving-api==2.5.0
 tensorflow-serving-api
 numpy
