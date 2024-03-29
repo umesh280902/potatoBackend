@@ -67,3 +67,6 @@ async def predict(file: UploadFile = File(...)):
     # return {"confidence": confidence,"class":CLASS_NAMES[np.argmax(predictions)]}
     
     return {"class" : typeClass, "confidence" : confidence}
+
+if __name__=="__main__":
+    app.run(host='0.0.0.0',run=app)
