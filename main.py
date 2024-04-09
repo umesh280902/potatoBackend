@@ -18,6 +18,7 @@ CLASS_NAMES = ['Early Blight','Late Blight','Healthy']
 origins = [
     "http://localhost",
     "http://localhost:5173",
+    "http://localhost:19006"
 ]
 app.add_middleware(
     CORSMiddleware,
