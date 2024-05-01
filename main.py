@@ -12,8 +12,20 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-MODEL = tf.keras.models.load_model("./models/1/1.keras")
-CLASS_NAMES = ['Early Blight','Late Blight','Healthy']
+MODEL_TOMATO = tf.keras.models.load_model("./models/Tomato/1.keras")
+MODEL_POTATO = tf.keras.models.load_model("./models/Potato/1/1.keras")
+
+CLASS_NAMES_POTATO = ['Early Blight','Late Blight','Healthy']
+CLASS_NAMES_TOMATO = ['Tomato_Bacterial_spot',
+ 'Tomato_Early_blight',
+ 'Tomato_Late_blight',
+ 'Tomato_Leaf_Mold',
+ 'Tomato_Septoria_leaf_spot',
+ 'Tomato_Spider_mites_Two_spotted_spider_mite',
+ 'Tomato__Target_Spot',
+ 'Tomato__Tomato_YellowLeaf__Curl_Virus',
+ 'Tomato__Tomato_mosaic_virus',
+ 'Tomato_healthy']
 
 origins = [
     "http://localhost",
@@ -46,19 +58,18 @@ async def ping():
 # async def predict():
 #     return 
 
-
-@app.post("/predict/")
+@app.post("/predict/tomato")
 async def predict(file: UploadFile = File(...)):
     data = img_to_np(await file.read())
     # print(data)
     
     data_batch = np.expand_dims(data,axis=0)
     
-    predictions = MODEL.predict(data_batch)
+    predictions = MODEL_TOMATO.predict(data_batch)
     
-    print(predictions,CLASS_NAMES[np.argmax(predictions[0])])
+    print(predictions,CLASS_NAMES_TOMATO[np.argmax(predictions[0])])
 
-    typeClass = CLASS_NAMES[np.argmax(predictions[0])]
+    typeClass = CLASS_NAMES_TOMATO[np.argmax(predictions[0])]
     
     confidence = int(np.argmax(predictions[0]))
     confidence = str(predictions[0][confidence]*100)
@@ -69,5 +80,29 @@ async def predict(file: UploadFile = File(...)):
     
     return {"class" : typeClass, "confidence" : confidence}
 
-if __name__=="__main__":
-    app.run(host='0.0.0.0',run=app)
+@app.post("/predict/potato")
+async def predict(file: UploadFile = File(...)):
+    data = img_to_np(await file.read())
+    # print(data)
+    
+    data_batch = np.expand_dims(data,axis=0)
+    
+    predictions = MODEL_POTATO.predict(data_batch)
+    
+    print(predictions,CLASS_NAMES_POTATO[np.argmax(predictions[0])])
+
+    typeClass = CLASS_NAMES_POTATO[np.argmax(predictions[0])]
+    
+    confidence = int(np.argmax(predictions[0]))
+    confidence = str(predictions[0][confidence]*100)
+    
+    # pass
+    # return data
+    # return {"confidence": confidence,"class":CLASS_NAMES[np.argmax(predictions)]}
+    
+    return {"class" : typeClass, "confidence" : confidence}
+
+
+
+
+
